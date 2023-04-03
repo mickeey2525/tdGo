@@ -14,22 +14,22 @@ This SDK provides a simple way to authenticate, manage, and access the resources
 To install tdGo, use the go get command:
 
 ```bash
-go get github.com/mickeey2525/td-go
+go get github.com/mickeey2525/tdGo
 ```
 
 ## Usage
 First, import the package in your Go code:
 
 ```go
-import "github.com/mickeey2525/td-go"
+import "github.com/mickeey2525/tdGo"
 ```
 
-Create a new td-go client using your Treasure Data API key and base URL:
+Create a new tdGo client using your Treasure Data API key and base URL:
 
 ```go
 client, err := tdGo.NewClient("your-api-key", "https://api.treasuredata.com")
 if err != nil {
-	log.Fatalf("Failed to create td-go client: %s", err)
+	log.Fatalf("Failed to create tdGo client: %s", err)
 }
 ```
 
