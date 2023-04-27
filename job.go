@@ -2,7 +2,6 @@ package tdGo
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -196,8 +195,6 @@ func (c *Client) SetResultExport(ctx context.Context, jobId int, resultExportSet
 	c.setHeaders(c.httpClient)
 	resultSettings := make(map[string]string)
 	resultSettings["result"] = resultExportSettings
-	js, _ := json.Marshal(resultSettings)
-	fmt.Println(string(js))
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&Job{}).SetBody(resultSettings).Post(c.baseURL.String() + fmt.Sprintf("/v3/job/result_export/%d", jobId))
 	if err != nil {
 		return nil, err
