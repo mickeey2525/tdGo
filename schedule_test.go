@@ -35,7 +35,6 @@ func TestClient_CreateSchedule(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.CreateSchedule(tt.args.ctx, tt.args.name, tt.args.options)
@@ -75,7 +74,6 @@ func TestClient_DeleteSchedule(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.DeleteSchedule(tt.args.ctx, tt.args.name)
@@ -117,7 +115,6 @@ func TestClient_GetScheduleHistory(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.GetScheduleHistory(tt.args.ctx, tt.args.name, tt.args.from, tt.args.to)
@@ -156,7 +153,6 @@ func TestClient_GetSchedules(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.GetSchedules(tt.args.ctx)
@@ -197,7 +193,6 @@ func TestClient_RunSchedule(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.RunSchedule(tt.args.ctx, tt.args.name, tt.args.scheduleTime)
@@ -238,7 +233,6 @@ func TestClient_UpdateSchedule(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.UpdateSchedule(tt.args.ctx, tt.args.name, tt.args.options)
