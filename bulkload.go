@@ -8,7 +8,7 @@ import (
 
 // GetBulkLoad returns JSON array as *[]map[string]any because data format is flexible
 func (c *Client) GetBulkLoad(ctx context.Context) (*[]map[string]any, error) {
-	c.setHeaders(c.httpClient)
+
 	var result []map[string]any
 	resp, err := c.httpClient.R().SetResult(result).SetContext(ctx).Get(c.baseURL.String() + "/v3/bulk_loads")
 	if err != nil {
@@ -49,7 +49,7 @@ func (c *Client) GetBulkLoad(ctx context.Context) (*[]map[string]any, error) {
 // GuessConfig generates whole json file
 func (c *Client) GuessConfig(ctx context.Context, config string) (*map[string]any, error) {
 	var result map[string]any
-	c.setHeaders(c.httpClient)
+
 	c.httpClient.SetHeader("content-type", "application/json")
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(result).SetBody(config).Post(c.baseURL.String() + "/v3/bulk_loads/guess")
 	if err != nil {
@@ -68,7 +68,7 @@ func (c *Client) GuessConfig(ctx context.Context, config string) (*map[string]an
 // GetBulkLoadWithName will return BulkLoad session by specifying unique id like s3_v2_import_xyz
 func (c *Client) GetBulkLoadWithName(ctx context.Context, name string) (*map[string]any, error) {
 	var result map[string]any
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetResult(result).SetContext(ctx).Get(c.baseURL.String() + fmt.Sprintf("/v3/bulk_loads/%s", name))
 	if err != nil {
 		return nil, err
@@ -83,9 +83,10 @@ func (c *Client) GetBulkLoadWithName(ctx context.Context, name string) (*map[str
 	return resp.Result().(*map[string]any), nil
 }
 
+// GetBulkLoadHistory will return BulkLoad history by specifying unique name like s3_v2_import_xyz
 func (c *Client) GetBulkLoadHistory(ctx context.Context, name string) (*[]map[string]any, error) {
 	var result []map[string]any
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(result).Get(c.baseURL.String() + fmt.Sprintf("/v3/bulk_loads/%s/jobs", name))
 	if err != nil {
 		return nil, err
@@ -100,8 +101,8 @@ func (c *Client) GetBulkLoadHistory(ctx context.Context, name string) (*[]map[st
 	return resp.Result().(*[]map[string]any), nil
 }
 
+// BulkLoadPreview will return BulkLoad preview by specifying configs
 func (c *Client) BulkLoadPreview(ctx context.Context, config map[string]any) (*map[string]any, error) {
-	c.setHeaders(c.httpClient)
 	var result map[string]any
 	c.httpClient.SetHeader("content-type", "application/json")
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(result).SetBody(config).Post(c.baseURL.String() + "/v3/bulk_loads/preview")
@@ -118,8 +119,8 @@ func (c *Client) BulkLoadPreview(ctx context.Context, config map[string]any) (*m
 	return resp.Result().(*map[string]any), nil
 }
 
+// BulkLoadIssue will run a BulkLoad job by specifying config
 func (c *Client) BulkLoadIssue(ctx context.Context, db, table string, config map[string]any) (*JobInfo, error) {
-	c.setHeaders(c.httpClient)
 	params := make(map[string]string)
 	params["database"] = db
 	params["table"] = table
@@ -158,7 +159,6 @@ type BulkLoadOption struct {
 
 // BulkLoadCreate creates Source Settings using config parameter
 func (c *Client) BulkLoadCreate(ctx context.Context, db, table string, config map[string]any, option BulkLoadOption) (string, error) {
-	c.setHeaders(c.httpClient)
 
 	params := make(map[string]string)
 	params["database"] = db
@@ -183,8 +183,8 @@ func (c *Client) BulkLoadCreate(ctx context.Context, db, table string, config ma
 	return resp.String(), nil
 }
 
+// BulkLoadUpdate updates Source Settings using config parameter
 func (c *Client) BulkLoadUpdate(ctx context.Context, name string, config map[string]any) (string, error) {
-	c.setHeaders(c.httpClient)
 	resp, err := c.httpClient.R().SetContext(ctx).SetBody(config).SetContentLength(true).Put(c.baseURL.String() + fmt.Sprintf("/v3/bulk_loads/%s", name))
 	if err != nil {
 		return "", err
@@ -199,8 +199,8 @@ func (c *Client) BulkLoadUpdate(ctx context.Context, name string, config map[str
 	return resp.String(), nil
 }
 
+// BulkLoadDelete deletes Source Settings
 func (c *Client) BulkLoadDelete(ctx context.Context, name string) (string, error) {
-	c.setHeaders(c.httpClient)
 	resp, err := c.httpClient.R().SetContext(ctx).Delete(c.baseURL.String() + fmt.Sprintf("/v3/bulk_loads/%s", name))
 	if err != nil {
 		return "", err
@@ -219,8 +219,8 @@ type RunResponse struct {
 	JobId int `json:"job_id"`
 }
 
+// BulkLoadRun runs a BulkLoad job by specifying BulkLoad name like like s3_v2_import_xyz
 func (c *Client) BulkLoadRun(ctx context.Context, name string) (*RunResponse, error) {
-	c.setHeaders(c.httpClient)
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&RunResponse{}).Get(c.baseURL.String() + fmt.Sprintf("/v3/bulk_loads/%s/jobs", name))
 	if err != nil {
 		return nil, err

@@ -44,7 +44,7 @@ type Schedule struct {
 }
 
 func (c *Client) GetSchedules(ctx context.Context) (*ScheduleList, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&ScheduleList{}).Get(c.baseURL.String() + "/v3/schedule/list")
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ type ScheduleOption struct {
 }
 
 func (c *Client) CreateSchedule(ctx context.Context, name string, options ScheduleOption) (*Schedule, error) {
-	c.setHeaders(c.httpClient)
+
 	body := make(map[string]string)
 	body["cron"] = options.Cron
 	if options.Database == "" {
@@ -112,7 +112,6 @@ func (c *Client) CreateSchedule(ctx context.Context, name string, options Schedu
 }
 
 func (c *Client) DeleteSchedule(ctx context.Context, name string) (*Schedule, error) {
-	c.setHeaders(c.httpClient)
 
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&Schedule{}).Post(c.baseURL.String() + fmt.Sprintf("/v3/schedule/delete/%s", name))
 	if err != nil {
@@ -129,7 +128,7 @@ func (c *Client) DeleteSchedule(ctx context.Context, name string) (*Schedule, er
 }
 
 func (c *Client) UpdateSchedule(ctx context.Context, name string, options ScheduleOption) (*Schedule, error) {
-	c.setHeaders(c.httpClient)
+
 	c.httpClient.SetHeader("content-type", "application/x-www-form-urlencoded")
 	body := make(map[string]string)
 	body["cron"] = options.Cron
@@ -177,7 +176,7 @@ type SchedJobs struct {
 }
 
 func (c *Client) RunSchedule(ctx context.Context, name string, scheduleTime int64) (*SchedJobs, error) {
-	c.setHeaders(c.httpClient)
+
 	c.httpClient.SetHeader("content-type", "application/x-www-form-urlencoded")
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&SchedJobs{}).Post(c.baseURL.String() + fmt.Sprintf("/v3/schedule/run/%s/%d", name, scheduleTime))
 	if err != nil {
@@ -202,7 +201,7 @@ type SchedHistory struct {
 }
 
 func (c *Client) GetScheduleHistory(ctx context.Context, name string, from, to int) (*SchedHistory, error) {
-	c.setHeaders(c.httpClient)
+
 	params := make(map[string]string)
 	params["from"] = strconv.Itoa(from)
 	params["to"] = strconv.Itoa(to)
