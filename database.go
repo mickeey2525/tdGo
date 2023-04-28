@@ -20,7 +20,7 @@ type Database struct {
 }
 
 func (c *Client) GetDBList(ctx context.Context) (*Databases, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&Databases{}).Get(c.baseURL.String() + "/v3/database/list")
 	if err != nil {
 		return nil, err
@@ -38,7 +38,7 @@ func (c *Client) GetDBList(ctx context.Context) (*Databases, error) {
 }
 
 func (c *Client) ShowDB(ctx context.Context, dbName string) (*Database, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&Database{}).Get(c.baseURL.String() + fmt.Sprintf("/v3/database/show/%s", dbName))
 	if err != nil {
 		return nil, err
@@ -60,7 +60,7 @@ type DBName struct {
 }
 
 func (c *Client) CreateDB(ctx context.Context, dbName string) (*DBName, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&DBName{}).Post(c.baseURL.String() + fmt.Sprintf("/v3/database/create/%s", dbName))
 	if err != nil {
 		return nil, err
@@ -77,7 +77,7 @@ func (c *Client) CreateDB(ctx context.Context, dbName string) (*DBName, error) {
 }
 
 func (c *Client) DeleteDB(ctx context.Context, dbName string) (*DBName, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&DBName{}).Post(c.baseURL.String() + fmt.Sprintf("/v3/database/delete/%s", dbName))
 	if err != nil {
 		return nil, err

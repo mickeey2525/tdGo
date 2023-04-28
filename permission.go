@@ -12,7 +12,7 @@ type ColumnPermission struct {
 }
 
 func (c *Client) ShowColumnPermission(ctx context.Context, policyId int) (*ColumnPermission, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&ColumnPermission{}).Get(c.baseURL.String() + fmt.Sprintf("/v3/access_control/policies/%d/column_permissions", policyId))
 	if err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (c *Client) ShowColumnPermission(ctx context.Context, policyId int) (*Colum
 }
 
 func (c *Client) UpdateColumnPermission(ctx context.Context, policyId int, permission ColumnPermission) (*ColumnPermission, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&ColumnPermission{}).SetBody(permission).Patch(c.baseURL.String() + fmt.Sprintf("/v3/access_control/policies/%d/column_permissions", policyId))
 	if err != nil {
 		return nil, err
@@ -44,7 +44,7 @@ func (c *Client) UpdateColumnPermission(ctx context.Context, policyId int, permi
 }
 
 func (c *Client) ShowPolicyPermissions(ctx context.Context, policyId int) (string, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).Get(c.baseURL.String() + fmt.Sprintf("/v3/access_control/policies/%d/permissions", policyId))
 	if err != nil {
 		return "", err
@@ -62,7 +62,7 @@ func (c *Client) ShowPolicyPermissions(ctx context.Context, policyId int) (strin
 // UpdatePolicyPermissions updates specified policy's permissions.
 // For the Permissions body, please see https://api-docs.treasuredata.com/pages/td-api/tag/Access-Control-Permissions/#tag/Access-Control-Permissions/operation/updatePermissionByPolicyId
 func (c *Client) UpdatePolicyPermissions(ctx context.Context, policyId int, permissions string) (string, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetBody(permissions).Patch(c.baseURL.String() + fmt.Sprintf("/v3/access_control/policies/%d/permissions", policyId))
 	if err != nil {
 		return "", err

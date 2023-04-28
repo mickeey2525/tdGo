@@ -97,7 +97,6 @@ func TestClient_BulkLoadDelete(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.BulkLoadDelete(tt.args.ctx, tt.args.name)
@@ -139,7 +138,6 @@ func TestClient_BulkLoadIssue(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.BulkLoadIssue(tt.args.ctx, tt.args.db, tt.args.table, tt.args.config)
@@ -179,7 +177,6 @@ func TestClient_BulkLoadPreview(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.BulkLoadPreview(tt.args.ctx, tt.args.config)
@@ -219,7 +216,6 @@ func TestClient_BulkLoadRun(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.BulkLoadRun(tt.args.ctx, tt.args.name)
@@ -260,7 +256,6 @@ func TestClient_BulkLoadUpdate(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.BulkLoadUpdate(tt.args.ctx, tt.args.name, tt.args.config)
@@ -299,7 +294,6 @@ func TestClient_GetBulkLoad(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.GetBulkLoad(tt.args.ctx)
@@ -339,7 +333,6 @@ func TestClient_GetBulkLoadWithName(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.GetBulkLoadWithName(tt.args.ctx, tt.args.name)
@@ -379,7 +372,6 @@ func TestClient_GuessConfig(t *testing.T) {
 			c := &Client{
 				apikey:     tt.fields.apikey,
 				baseURL:    tt.fields.baseURL,
-				logger:     tt.fields.logger,
 				httpClient: tt.fields.httpClient,
 			}
 			got, err := c.GuessConfig(tt.args.ctx, tt.args.config)

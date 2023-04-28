@@ -67,7 +67,6 @@ func (c *Client) GetJobList(ctx context.Context, from, to int, status JobStatus)
 		queryParams["status"] = strings.ToLower(status.String())
 	}
 	client := c.httpClient
-	c.setHeaders(client)
 	resp, err := client.R().SetContext(ctx).SetQueryParams(queryParams).SetResult(&JobList{}).Get(c.baseURL.String() + "/v3/job/list")
 	if err != nil {
 		return nil, err
@@ -84,7 +83,7 @@ func (c *Client) GetJobList(ctx context.Context, from, to int, status JobStatus)
 }
 
 func (c *Client) ShowJob(ctx context.Context, jobId int) (*JobDetails, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&JobDetails{}).Get(c.baseURL.String() + fmt.Sprintf("/v3/job/show/%d", jobId))
 	if err != nil {
 		return nil, err
@@ -109,12 +108,11 @@ type JobOption struct {
 }
 
 func (c *Client) CreateJob(ctx context.Context, jobType JobType, database string, jobOption JobOption) (*JobInfo, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&JobInfo{}).SetBody(jobOption).Post(c.baseURL.String() + fmt.Sprintf("/v3/job/issue/%s/%s", strings.ToLower(jobType.String()), database))
 	if err != nil {
 		return nil, err
 	}
-
 	if resp.IsError() {
 		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
 	}
@@ -139,7 +137,7 @@ type JobSts struct {
 }
 
 func (c *Client) CheckJobStatus(ctx context.Context, jobId int) (*JobSts, error) {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&JobSts{}).Get(c.baseURL.String() + fmt.Sprintf("/v3/job/status/%d", jobId))
 	if err != nil {
 		return nil, err
@@ -155,7 +153,7 @@ func (c *Client) CheckJobStatus(ctx context.Context, jobId int) (*JobSts, error)
 }
 
 func (c *Client) KillJob(ctx context.Context, jobId int) error {
-	c.setHeaders(c.httpClient)
+
 	resp, err := c.httpClient.R().SetContext(ctx).Post(c.baseURL.String() + fmt.Sprintf("/v3/job/kill/%d", jobId))
 	if err != nil {
 		return err
@@ -171,7 +169,7 @@ func (c *Client) KillJob(ctx context.Context, jobId int) error {
 }
 
 func (c *Client) GetResult(ctx context.Context, jobId int, format FileFormat, outPath string) error {
-	c.setHeaders(c.httpClient)
+
 	formatTmp := strings.ToLower(format.String())
 	if formatTmp == "msgpackgz" {
 		formatTmp = "msgpack.gz"
@@ -192,7 +190,7 @@ func (c *Client) GetResult(ctx context.Context, jobId int, format FileFormat, ou
 }
 
 func (c *Client) SetResultExport(ctx context.Context, jobId int, resultExportSettings string) (*Job, error) {
-	c.setHeaders(c.httpClient)
+
 	resultSettings := make(map[string]string)
 	resultSettings["result"] = resultExportSettings
 	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&Job{}).SetBody(resultSettings).Post(c.baseURL.String() + fmt.Sprintf("/v3/job/result_export/%d", jobId))
