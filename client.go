@@ -1,9 +1,11 @@
 package tdGo
 
 import (
+	"context"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"log"
+	"net/http"
 	"net/url"
 )
 
@@ -75,7 +77,7 @@ func (c *Client) setMiddleware() {
 		c.logger.Debugf("Request URL: %s", request.URL)
 		c.logger.Debugf("Request Method: %s", request.Method)
 		c.logger.Debugf("Request Headers: %v", request.Header)
-
+		c.logger.Debugf("Request Body: %v", request.Body)
 		return nil
 	})
 
@@ -91,6 +93,52 @@ func (c *Client) setMiddleware() {
 		}
 		return nil
 	})
+}
+
+const (
+	ContentTypeJSON           = "application/json"
+	ContentTypeFormURLEncoded = "application/x-www-form-urlencoded"
+)
+
+func (c *Client) apiCall(ctx context.Context, method string, endpoint string, requestBody interface{}, result any, contentType string) (*resty.Response, error) {
+	req := c.httpClient.R().SetContext(ctx).SetResult(result)
+	if requestBody != nil {
+		req.SetBody(requestBody)
+	}
+
+	// Set the Content-Type header
+	if contentType != "" {
+		req.SetHeader("Content-Type", contentType)
+	}
+
+	var resp *resty.Response
+	var err error
+
+	switch method {
+	case http.MethodGet:
+		resp, err = req.Get(c.baseURL.String() + endpoint)
+	case http.MethodPost:
+		resp, err = req.SetBody(requestBody).Post(c.baseURL.String() + endpoint)
+	case http.MethodPut:
+		resp, err = req.SetBody(requestBody).Put(c.baseURL.String() + endpoint)
+	case http.MethodDelete:
+		resp, err = req.Delete(c.baseURL.String() + endpoint)
+	default:
+		return nil, fmt.Errorf("unsupported HTTP method: %s", method)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	if resp.IsError() {
+		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
+	}
+	ok := checkStatus(resp)
+	if ok != nil {
+		return nil, ok
+	}
+
+	return resp, nil
 }
 
 // checkStatus is for check status code
