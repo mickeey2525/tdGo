@@ -108,17 +108,10 @@ type JobOption struct {
 }
 
 func (c *Client) CreateJob(ctx context.Context, jobType JobType, database string, jobOption JobOption) (*JobInfo, error) {
-
-	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&JobInfo{}).SetBody(jobOption).Post(c.baseURL.String() + fmt.Sprintf("/v3/job/issue/%s/%s", strings.ToLower(jobType.String()), database))
+	endpoint := fmt.Sprintf("/v3/job/issue/%s/%s", strings.ToLower(jobType.String()), database)
+	resp, err := c.apiCall(ctx, "POST", endpoint, jobOption, &JobInfo{}, ContentTypeJSON)
 	if err != nil {
 		return nil, err
-	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-	ok := checkStatus(resp)
-	if ok != nil {
-		return nil, ok
 	}
 	return resp.Result().(*JobInfo), nil
 }
@@ -137,33 +130,19 @@ type JobSts struct {
 }
 
 func (c *Client) CheckJobStatus(ctx context.Context, jobId int) (*JobSts, error) {
-
-	resp, err := c.httpClient.R().SetContext(ctx).SetResult(&JobSts{}).Get(c.baseURL.String() + fmt.Sprintf("/v3/job/status/%d", jobId))
+	endpoint := fmt.Sprintf("/v3/job/status/%d", jobId)
+	resp, err := c.apiCall(ctx, "GET", endpoint, nil, &JobSts{}, "")
 	if err != nil {
 		return nil, err
-	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-	ok := checkStatus(resp)
-	if ok != nil {
-		return nil, ok
 	}
 	return resp.Result().(*JobSts), nil
 }
 
 func (c *Client) KillJob(ctx context.Context, jobId int) error {
-
-	resp, err := c.httpClient.R().SetContext(ctx).Post(c.baseURL.String() + fmt.Sprintf("/v3/job/kill/%d", jobId))
+	endpoint := fmt.Sprintf("/v3/job/kill/%d", jobId)
+	_, err := c.apiCall(ctx, "POST", endpoint, nil, nil, "")
 	if err != nil {
 		return err
-	}
-	if resp.IsError() {
-		return fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-	ok := checkStatus(resp)
-	if ok != nil {
-		return ok
 	}
 	return nil
 }

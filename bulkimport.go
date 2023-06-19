@@ -3,6 +3,7 @@ package tdGo
 import (
 	"context"
 	"fmt"
+	"io"
 )
 
 // BulkImport is a struct for bulk import
@@ -15,55 +16,28 @@ type BulkImport struct {
 
 // BulkImportCreate creates a bulk import
 func (c *Client) BulkImportCreate(ctx context.Context, name, db, tbl string) (*BulkImport, error) {
-	resp, err := c.httpClient.R().SetResult(&BulkImport{}).SetContext(ctx).Post(c.baseURL.String() + fmt.Sprintf("/v3/bulk_import/create/%s/%s/%s", name, db, tbl))
+	resp, err := c.apiCall(ctx, "POST", fmt.Sprintf("/v3/bulk_import/create/%s/%s/%s", name, db, tbl), nil, BulkImport{}, "")
 	if err != nil {
 		return nil, err
 	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-
-	ok := checkStatus(resp)
-	if ok != nil {
-		return nil, ok
-	}
-
 	return resp.Result().(*BulkImport), nil
 }
 
 // BulkImportUpload uploads files to bulkimport sessions
-func (c *Client) BulkImportUpload(ctx context.Context, name, tbl string, files []byte) (*BulkImport, error) {
-	resp, err := c.httpClient.R().SetResult(&BulkImport{}).SetContext(ctx).SetBody(files).Put(c.baseURL.String() + fmt.Sprintf("/v3/bulk_import/upload_part/%s/%s", tbl, name))
+func (c *Client) BulkImportUpload(ctx context.Context, name, tbl string, files io.Reader) (*BulkImport, error) {
+	resp, err := c.apiCall(ctx, "PUT", fmt.Sprintf("/v3/bulk_import/upload_part/%s/%s", tbl, name), files, BulkImport{}, "")
 	if err != nil {
 		return nil, err
 	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-
-	ok := checkStatus(resp)
-	if ok != nil {
-		return nil, ok
-	}
-
 	return resp.Result().(*BulkImport), nil
 }
 
 // BulkImportCommit commits a bulk import
 func (c *Client) BulkImportCommit(ctx context.Context, name string) (*BulkImport, error) {
-	resp, err := c.httpClient.R().SetResult(&BulkImport{}).SetContext(ctx).Post(c.baseURL.String() + fmt.Sprintf("/v3/bulk_import/commit/%s", name))
+	resp, err := c.apiCall(ctx, "POST", fmt.Sprintf("/v3/bulk_import/commit/%s", name), nil, BulkImport{}, "")
 	if err != nil {
 		return nil, err
 	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-
-	ok := checkStatus(resp)
-	if ok != nil {
-		return nil, ok
-	}
-
 	return resp.Result().(*BulkImport), nil
 }
 

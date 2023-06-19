@@ -1,6 +1,7 @@
 package tdGo
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -354,7 +355,8 @@ func TestClient_BulkImportUpload(t *testing.T) {
 		log.Fatalln(err)
 	}
 	data, err := os.ReadFile("./testdata/test.msgpack.gz")
-	got, err := client.BulkImportUpload(context.Background(), "test_bulk_import", "test_bulk_import", data)
+	reader := bytes.NewReader(data)
+	got, err := client.BulkImportUpload(context.Background(), "test_bulk_import", "test_bulk_import", reader)
 	if err != nil {
 		log.Fatalln(err)
 	}

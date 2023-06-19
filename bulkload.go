@@ -8,18 +8,10 @@ import (
 
 // GetBulkLoad returns JSON array as *[]map[string]any because data format is flexible
 func (c *Client) GetBulkLoad(ctx context.Context) (*[]map[string]any, error) {
-
 	var result []map[string]any
-	resp, err := c.httpClient.R().SetResult(result).SetContext(ctx).Get(c.baseURL.String() + "/v3/bulk_loads")
+	resp, err := c.apiCall(ctx, "GET", "/v3/bulk_loads", nil, &result, "")
 	if err != nil {
 		return nil, err
-	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-	ok := checkStatus(resp)
-	if ok != nil {
-		return nil, ok
 	}
 	return resp.Result().(*[]map[string]any), nil
 }
@@ -49,18 +41,9 @@ func (c *Client) GetBulkLoad(ctx context.Context) (*[]map[string]any, error) {
 // GuessConfig generates whole json file
 func (c *Client) GuessConfig(ctx context.Context, config string) (*map[string]any, error) {
 	var result map[string]any
-
-	c.httpClient.SetHeader("content-type", "application/json")
-	resp, err := c.httpClient.R().SetContext(ctx).SetResult(result).SetBody(config).Post(c.baseURL.String() + "/v3/bulk_loads/guess")
+	resp, err := c.apiCall(ctx, "POST", "/v3/bulk_loads/guess", config, result, ContentTypeJSON)
 	if err != nil {
 		return nil, err
-	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-	ok := checkStatus(resp)
-	if ok != nil {
-		return nil, ok
 	}
 	return resp.Result().(*map[string]any), nil
 }
@@ -68,17 +51,9 @@ func (c *Client) GuessConfig(ctx context.Context, config string) (*map[string]an
 // GetBulkLoadWithName will return BulkLoad session by specifying unique id like s3_v2_import_xyz
 func (c *Client) GetBulkLoadWithName(ctx context.Context, name string) (*map[string]any, error) {
 	var result map[string]any
-
-	resp, err := c.httpClient.R().SetResult(result).SetContext(ctx).Get(c.baseURL.String() + fmt.Sprintf("/v3/bulk_loads/%s", name))
+	resp, err := c.apiCall(ctx, "GET", fmt.Sprintf("/v3/bulk_loads/%s", name), nil, result, "")
 	if err != nil {
 		return nil, err
-	}
-	if resp.IsError() {
-		return nil, fmt.Errorf("API error: %s: %s", resp.Status(), string(resp.Body()))
-	}
-	ok := checkStatus(resp)
-	if ok != nil {
-		return nil, ok
 	}
 	return resp.Result().(*map[string]any), nil
 }

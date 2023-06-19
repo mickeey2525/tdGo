@@ -44,58 +44,56 @@ func main() {
 	fmt.Println(string(js))
 
 	/*
-			resultSetting := fmt.Sprintf("td://%s@api.treasuredata.com/tachibana_s3_testdb/sample_data", apikey)
-			resp, err := client.SetResultExport(context.Background(), 1748136125, resultSetting)
-			if err != nil {
-				log.Fatalln(err)
-			}
-			js, err = json.Marshal(resp)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println(string(js))
-
-			fmt.Println()
-
-		connectorConfig := `
-			{
-			  "config": {
-			    "in": {
-			      "type": "s3_v2",
-			      "td_authentication_id": 12345,
-			      "bucket": "your_bucket",
-			      "path_prefix": "path/to/your/data",
-			    },
-			    "out": {
-			      "mode": "append"
-			    }
-			  }
-			}`
-		guess, err := client.GuessConfig(ctx, connectorConfig)
+		resultSetting := fmt.Sprintf("td://%s@api.treasuredata.com/tachibana_s3_testdb/sample_data", apikey)
+		resp, err := client.SetResultExport(context.Background(), 1748136125, resultSetting)
 		if err != nil {
 			log.Fatalln(err)
 		}
-		fmt.Println(guess)
-		issue, err := client.BulkLoadIssue(ctx, "your_database", "tdgo_sample", *guess)
+		js, err = json.Marshal(resp)
 		if err != nil {
-			log.Fatalln(err)
+			log.Fatal(err)
 		}
-		fmt.Println(issue)
+		fmt.Println(string(js))
 
-		option := tdGo.BulkLoadOption{
-			Name:       "test_bulk_load",
-			Cron:       "",
-			Timezone:   "UTC",
-			Delay:      0,
-			TimeColumn: "",
-		}
-
-		source, err := client.BulkLoadCreate(ctx, "your_database", "tdgo_test", *guess, option)
-		if err != nil {
-			log.Fatalln(err)
-		}
-
-		print(source)
-
+		fmt.Println()
 	*/
+	connectorConfig := `{
+  "config": {
+    "in": {
+      "type": "s3_v2",
+      "td_authentication_id": 269100,
+      "bucket": "my-tdsupport-tf-sample-test",
+      "path_prefix": "1465868324.csv"
+    },
+    "out": {
+      "mode": "append"
+    }
+  }
+}`
+	guess, err := client.GuessConfig(ctx, connectorConfig)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(guess)
+	issue, err := client.BulkLoadIssue(ctx, "tachibana_s3_testdb", "tdgo_sample", *guess)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	fmt.Println(issue)
+
+	option := tdGo.BulkLoadOption{
+		Name:       "test_bulk_load",
+		Cron:       "",
+		Timezone:   "UTC",
+		Delay:      0,
+		TimeColumn: "",
+	}
+
+	source, err := client.BulkLoadCreate(ctx, "tachibana_s3_testdb", "tdgo_test", *guess, option)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	print(source)
+
 }
